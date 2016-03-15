@@ -74,14 +74,19 @@ Support for new sources is possible by implementing the [`Datasource`](https://g
 The Linked Data Fragments server supports the [Memento Protocol](http://mementoweb.org/about/). If your linked data source evolve over time and has multiple versions, Memento makes it straightforward to access and query across the various versions. For instance, the [Memento DbPedia LDF Server](http://fragments.mementodepot.org/) supports about 10 versions of DbPedia starting from 2007. A Memento Client like [Memento for Chrome](http://bit.ly/memento-for-chrome) can be used to navigate the versions in a browser. The command line utility, cUrl, can also be used to see Memento in action. The following example queries the Memento LDF TimeGate to retrieve a Memento of the English DbPedia page around 15 March 2015.
 
 ```
-curl -I -H "Accept-Datetime: Wed, 15 Apr 2015 00:00:00 GMT" http://dbpedia.mementodepot.org/timegate/object/http://dbpedia.org/page/English
+curl -IL -H "Accept-Datetime: Wed, 15 Apr 2015 00:00:00 GMT" http://dbpedia.mementodepot.org/timegate/http://dbpedia.org/page/English
 
 HTTP/1.1 302 Found
-Date: Tue, 15 Mar 2016 20:57:34 GMT
-Location: http://dbpedia.mementodepot.org/memento/20150415000000/object/http://dbpedia.org/page/English
+Date: Tue, 15 Mar 2016 21:07:08 GMT
+Location: http://dbpedia.mementodepot.org/memento/20150415000000/http://dbpedia.org/page/English
 Vary: accept-datetime
-Link: <object/http://dbpedia.org/page/English>; rel="original",<http://dbpedia.mementodepot.org/timemap/link/object/http://dbpedia.org/page/English>; rel="timemap"; type="application/link-format",<http://dbpedia.mementodepot.org/memento/20150415000000/object/http://dbpedia.org/page/English>; rel="memento"; datetime="Wed, 15 Apr 2015 00:00:00 GMT"
-Connection: keep-alive
+Link: <http://dbpedia.org/page/English>; rel="original",<http://dbpedia.mementodepot.org/timemap/link/http://dbpedia.org/page/English>; rel="timemap"; type="application/link-format",<http://dbpedia.mementodepot.org/memento/20150415000000/http://dbpedia.org/page/English>; rel="memento"; datetime="Wed, 15 Apr 2015 00:00:00 GMT"
+
+HTTP/1.1 200 OK
+Date: Tue, 15 Mar 2016 21:07:08 GMT
+Content-Type: text/html
+Link: <http://dbpedia.org/page/English>; rel="original", <http://dbpedia.mementodepot.org/memento/20150415000000/http://dbpedia.org/page/English>; rel="memento"; datetime="Wed, 15 Apr 2015 00:00:00 GMT", <http://dbpedia.mementodepot.org/timegate/http://dbpedia.org/page/English>; rel="timegate", <http://dbpedia.mementodepot.org/timemap/link/http://dbpedia.org/page/English>; rel="timemap"
+Memento-Datetime: Wed, 15 Apr 2015 00:00:00 GMT
 ```
 
 #### Memento configuration
