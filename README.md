@@ -70,6 +70,69 @@ The following sources are supported out of the box:
 
 Support for new sources is possible by implementing the [`Datasource`](https://github.com/LinkedDataFragments/Server.js/blob/master/lib/datasources/Datasource.js) interface.
 
+### Memento
+The Linked Data Fragments server supports the [Memento Protocol](http://mementoweb.org/about/). If your linked data source evolve over time and has multiple versions, Memento makes it straightforward to access and query across the various versions. For instance, the [Memento DbPedia LDF Server](http://fragments.mementodepot.org/) supports about 10 versions of DbPedia starting from 2007. A Memento Client like [Memento for Chrome](http://bit.ly/memento-for-chrome) can be used to navigate the versions in a browser, or other clients could be used to perform complex analyses across time.
+
+#### Memento configuration
+To enable Memento support, a new section called `timegates` must be added to the `config.json` file along with information about the versions in the `datasources` section. 
+
+The `timegates` section lists all the versions, called memento, of a data source. The LDF server uses this information to connect a particular data source with its versions, and also to build the appropriate Memento URL for the versions.
+
+For example, the `timegates` section below shows 2 versions of DbPedia:
+```json
+"timegates": {
+  "baseURL": "/timegate/",
+  "mementos": {
+    "dbpedia": {
+      "versions": [
+        "dbpedia_2015",
+        "dbpedia_2014"
+      ]
+    }
+  }
+}
+```
+
+For these 2 versions, the `datasources` section of the config looks like:
+```json
+"datasources": {
+  "dbpedia": {
+    "title":       "DBpedia 2015",
+    "description": "DBpedia 2015 with an HDT back-end",
+    "type":        "HdtDatasource",
+    "settings":    {
+      "file": "/data1/dbpedia/cdata_2015.hdt"
+    },
+    "timegate": true
+  },
+  "dbpedia_2015": {
+    "title":       "DBpedia v2015",
+    "description": "DBpedia v2015 with an HDT back-end",
+    "type":        "HdtDatasource",
+    "settings":    {
+      "file": "/data1/dbpedia/cdata_2015.hdt"
+    },
+    "memento": {
+      "interval": ["2015-04-15T00:00:00Z", "2014-09-14T11:59:59Z"]
+    }
+  },
+  "dbpedia_2014": {
+    "title":       "DBpedia v2014",
+    "description": "DBpedia v2014 with an HDT back-end",
+    "type":        "HdtDatasource",
+    "settings":    {
+      "file": "/data1/dbpedia/cdata_2014.hdt"
+    },
+    "memento": {
+      "interval": ["2014-09-15T00:00:00Z", "2013-06-15T11:59:59Z"]
+    }
+  }
+```
+
+The first datasource named `dbpedia` is the current version or in Memento terms, the Original. This datasource has a parameter called `timegate: true` which indicates to the LDF server that there are mementos available to this datasource. The LDF server will then use the information provided in the `timegates` section to build the approriate Memento responses.
+
+The datasources `dbpedia_2015` and `dbpedia_2014` contains information about the data source and also information about the time interval this version was active in the `memento` section. The time interval must be in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601). 
+
 ### Start the server
 
 After creating a configuration file, execute
