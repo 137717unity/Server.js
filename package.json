@@ -24,7 +24,7 @@
     "request": "^2.27.0",
     "mime": "^1.2.11",
     "negotiate": "^1.0.1",
-    "lodash": "^2.4.0",
+    "lodash": "^4.17.20",
     "lru-cache": "^2.5.0",
     "uritemplate": "^0.3.0"
   },
